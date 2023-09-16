@@ -11,6 +11,12 @@ class CalculatorGUI:
         self.entry = Entry(
             self.root, width=55, bg="darkgreen", fg="white", borderwidth=5
         )
+        self.entry.grid(row=0, column=0, columnspan=4)
+        
+        self.history_text = StringVar()
+        
+        self.history_label = Label(self.root, text=self.history_text, padx=80, pady=100, bg='darkred', height=6)
+        self.history_label.grid(row=0, rowspan=5, column=4, padx=5)
 
     def insert_char(self, text):
         current = self.entry.get()
@@ -32,16 +38,25 @@ class CalculatorGUI:
     def evaluate_from_memory(self) -> None:
         self.memory.append(self.entry.get())
         self.entry.delete(0, END)
+        
+        operation = "".join(self.memory)
 
-        answer = eval("".join(self.memory))
+        answer = eval(operation)
         
         self.entry.insert(0, answer)
         
+        self.update_history_text(text=operation)
+        
         self._reset_memory()
+    
+    def update_history_text(self, text)->None:
+        prev = self.history_text.get()
+        self.history_text.set(prev + '\n' + text)
+        self.history_label.config(text=self.history_text.get())
+        
 
     def main(self) -> None:
-        self.entry.grid(row=0, column=0, columnspan=4)
-
+        
         button_1 = Button(
             self.root, text="1", padx=40, pady=20, command=lambda: self.insert_char("1")
         )
@@ -134,8 +149,6 @@ class CalculatorGUI:
 
         debugger = Button(self.root, text="debug", command=lambda: print(self.memory))
         debugger.grid(row=5, column=1)
-        
-        
 
         self.root.mainloop()
 
