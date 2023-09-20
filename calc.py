@@ -13,9 +13,11 @@ class CalculatorGUI:
         )
         self.entry.grid(row=0, column=0, columnspan=4)
         
-        self.history_text = StringVar()
+        self.default_history_text_is_visible = True
+        self.default_history_text = 'Your history will show here!'
+        self.history_text = StringVar(value=self.default_history_text)
         
-        self.history_label = Label(self.root, text=self.history_text, padx=80, pady=100, bg='darkred', height=6)
+        self.history_label = Label(self.root, textvariable=self.history_text, padx=80, pady=100, bg='darkred', height=6)
         self.history_label.grid(row=0, rowspan=5, column=4, padx=5)
 
     def insert_char(self, text):
@@ -50,7 +52,8 @@ class CalculatorGUI:
         self._reset_memory()
     
     def update_history_text(self, text)->None:
-        prev = self.history_text.get()
+        self.default_history_text_is_visible = False
+        prev = self.history_text.get().replace(self.default_history_text, '')
         self.history_text.set(prev + '\n' + text)
         self.history_label.config(text=self.history_text.get())
         
